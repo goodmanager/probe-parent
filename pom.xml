@@ -274,6 +274,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+			<!-- powermock -->
 			<dependency>
 				<groupId>org.powermock</groupId>
 				<artifactId>powermock-module-junit4</artifactId>
