@@ -15,6 +15,7 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<!-- 公共库版本定义 -->
 		<spring-boot.version>2.2.4.RELEASE</spring-boot.version>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 		<protostuff.version>1.1.5</protostuff.version>
@@ -24,18 +25,19 @@
 		<ribbon-loadbalancer.version>2.7.17</ribbon-loadbalancer.version>
 		<disruptor.version>3.4.2</disruptor.version>
 		<guava.version>28.2-jre</guava.version>
-		<netty-all.version>4.1.44.Final</netty-all.version>
+		<netty-all.version>4.1.45.Final</netty-all.version>
+		<rxjava.version>2.2.17</rxjava.version>
 		<java-jwt.version>3.9.0</java-jwt.version>
 		<mysql-connector.version>5.1.47</mysql-connector.version>
 		<mybatis-spring-boot.version>2.1.1</mybatis-spring-boot.version>
-		<mybatis-plus.version>3.1.2</mybatis-plus.version>
+		<mybatis-plus.version>3.3.1</mybatis-plus.version>
 		<powermock.version>2.0.4</powermock.version>
 		<lombok.version>1.18.10</lombok.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- spring boot -->
+			<!-- spring boot 排除io.netty,单独引入netty依赖 -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -57,6 +59,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
 			<!-- apache curator 排除旧版本zookeeper、guava -->
 			<dependency>
 				<groupId>org.apache.curator</groupId>
@@ -73,7 +76,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<!-- 重新引入新版zookeeper -->
+			<!-- 重新引入apache curator依赖的新版zookeeper,并排除旧版netty等的依赖 -->
 			<dependency>
 				<groupId>org.apache.zookeeper</groupId>
 				<artifactId>zookeeper</artifactId>
@@ -119,7 +122,7 @@
 				</exclusions>
 			</dependency>
 
-			<!-- ribbon-loadbalancer 排除旧版本guava -->
+			<!-- ribbon-loadbalancer 排除旧版本guava、ribbon-core、servo-core -->
 			<dependency>
 				<groupId>com.netflix.ribbon</groupId>
 				<artifactId>ribbon-loadbalancer</artifactId>
@@ -138,9 +141,13 @@
 						<groupId>com.netflix.servo</groupId>
 						<artifactId>servo-core</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
-			<!-- 重新引入ribbon-core 排除旧版本guava、commons-lang等 -->
+			<!-- 重新引入ribbon-loadbalancer的依赖ribbon-core新版本,排除旧版本guava、commons-lang等 -->
 			<dependency>
 				<groupId>com.netflix.ribbon</groupId>
 				<artifactId>ribbon-core</artifactId>
@@ -160,7 +167,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<!-- 重新servo-core 排除旧版本guava等 -->
+			<!-- 重新引入ribbon-loadbalancer的依赖servo-core新版本,排除旧版本guava等 -->
 			<dependency>
 				<groupId>com.netflix.servo</groupId>
 				<artifactId>servo-core</artifactId>
@@ -176,18 +183,35 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+			<!-- rxjava2 -->
+			<dependency>
+				<groupId>io.reactivex.rxjava2</groupId>
+				<artifactId>rxjava</artifactId>
+				<version>${rxjava.version}</version>
+			</dependency>
+
 			<!-- netty -->
 			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-all</artifactId>
 				<version>${netty-all.version}</version>
 			</dependency>
+
+			<!-- guava -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+
 			<!-- jwt -->
 			<dependency>
 				<groupId>com.auth0</groupId>
 				<artifactId>java-jwt</artifactId>
 				<version>${java-jwt.version}</version>
 			</dependency>
+
 			<!-- apache commons -->
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -220,36 +244,35 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>3.9</version>
 			</dependency>
+
 			<!-- json -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
 				<version>1.2.62</version>
 			</dependency>
-			<!-- guava -->
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>${guava.version}</version>
-			</dependency>
+
 			<!-- disruptor -->
 			<dependency>
 				<groupId>com.lmax</groupId>
 				<artifactId>disruptor</artifactId>
 				<version>${disruptor.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
 			</dependency>
+
 			<!-- mysql connector -->
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysql-connector.version}</version>
 			</dependency>
+
 			<!-- 添加 MyBatis -->
 			<dependency>
 				<groupId>org.mybatis.spring.boot</groupId>
@@ -261,6 +284,7 @@
 				<artifactId>mybatis-plus</artifactId>
 				<version>${mybatis-plus.version}</version>
 			</dependency>
+
 			<!-- spring test -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
