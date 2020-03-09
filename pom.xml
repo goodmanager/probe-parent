@@ -145,6 +145,14 @@
 						<groupId>org.slf4j</groupId>
 						<artifactId>slf4j-api</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>com.netflix.netflix-commons</groupId>
+						<artifactId>netflix-statistics</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.netflix.netflix-commons</groupId>
+						<artifactId>netflix-commons-util</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<!-- 重新引入ribbon-loadbalancer的依赖ribbon-core新版本,排除旧版本guava、commons-lang等 -->
@@ -182,6 +190,17 @@
 						<artifactId>slf4j-api</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<!-- 重新引入ribbon-loadbalancer的依赖netflix-statistics新版本 -->
+			<dependency>
+				<groupId>com.netflix.netflix-commons</groupId>
+				<artifactId>netflix-statistics</artifactId>
+				<version>0.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.netflix.netflix-commons</groupId>
+				<artifactId>netflix-commons-util</artifactId>
+				<version>0.3.0</version>
 			</dependency>
 
 			<!-- rxjava2 -->
